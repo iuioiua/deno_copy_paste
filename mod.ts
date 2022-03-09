@@ -15,6 +15,10 @@ async function execute(cmd: string[], input?: string): Promise<string> {
 /**
  * Copies the text to the system clipboard
  * @param {string} text Text to copy to the clipboard
+ * @example
+ * ```ts
+ * await copy("Hello, world!"); // Copies "Hello, world!" to system clipboard
+ * ```
  */
 export async function copy(text: string): Promise<void> {
   const cmd = {
@@ -28,6 +32,10 @@ export async function copy(text: string): Promise<void> {
 /**
  * Pastes the text from the system clipboard
  * @returns {Promise<string>} Pasted text from the clipboard
+ * @example
+ * ```ts
+ * await paste(); // Returns text from clipboard
+ * ```
  */
 export function paste(): Promise<string> {
   const cmd = {
