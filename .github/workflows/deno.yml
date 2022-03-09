@@ -20,10 +20,10 @@ jobs:
 
     steps:
       - name: Setup repo
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Setup Deno
-      - uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v1
         with:
           deno-version: vx.x.x
 
