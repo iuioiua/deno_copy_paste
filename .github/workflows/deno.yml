@@ -27,11 +27,5 @@ jobs:
         with:
           deno-version: vx.x.x
 
-      - name: Verify formatting
-        run: deno fmt --check
-
-      - name: Run linter
-        run: deno lint
-
       - name: Run tests
         run: deno test --allow-run
