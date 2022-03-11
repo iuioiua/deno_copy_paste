@@ -16,7 +16,7 @@ on:
 
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: [macos-latest, windows-latest]
 
     steps:
       - name: Setup repo
