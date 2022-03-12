@@ -11,7 +11,7 @@ import { writeAll } from "./deps.ts";
 export async function copy(text: string): Promise<void> {
   const cmd = {
     "darwin": ["pbcopy"],
-    "linux": ["xclip", "-selection", "clipboard", "-i"],
+    "linux": ["xclip", "-selection", "clipboard"],
     "windows": ["powershell", "-noprofile", "-command", "$input|Set-Clipboard"],
   }[Deno.build.os];
   const process = await Deno.run({ cmd, stdin: "piped" });
@@ -32,7 +32,7 @@ export async function copy(text: string): Promise<void> {
 export async function paste(): Promise<string> {
   const cmd = {
     "darwin": ["pbpaste"],
-    "linux": ["xclip", "-selection", "clipboard", "-o"],
+    "linux": ["xclip", "-o"],
     "windows": ["powershell", "-noprofile", "-command", "Get-Clipboard"],
   }[Deno.build.os];
   const process = await Deno.run({ cmd, stdout: "piped" });
