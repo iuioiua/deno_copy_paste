@@ -1,11 +1,18 @@
 import { copy, paste } from "./mod.ts";
-import { assertStrictEquals } from "./deps.ts";
+import { assert } from "./deps.ts";
 
 Deno.test({
   name: "copy and paste",
   fn: async () => {
-    const text = crypto.randomUUID();
+    const text = `
+      hello world
+      single line data
+      multi\nline\ndata
+      \n\n\nmulti\n\n\n\n\n\nline\ndata\n\n\n\n\n
+      ~!@#$%^&*()_+-=[]{};\':",./<>?\t\n
+      Rafał
+    `;
     await copy(text);
-    assertStrictEquals(text, await paste());
+    assert(text === await paste());
   },
 });

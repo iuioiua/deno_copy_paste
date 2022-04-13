@@ -1,4 +1,4 @@
-import { writeAll } from "./deps.ts";
+import { assert, writeAll } from "./deps.ts";
 
 function encode(text: string): Uint8Array {
   return new TextEncoder().encode(text);
@@ -12,9 +12,7 @@ async function close(process: Deno.Process): Promise<void> {
   const { code } = await process.status();
   const rawError = await process.stderrOutput();
   process.close();
-  if (code !== 0) {
-    throw new Error(decode(rawError));
-  }
+  assert(code === 0, decode(rawError));
 }
 
 /**
@@ -46,16 +44,13 @@ export async function copy(text: string): Promise<void> {
  * ```
  */
 export async function paste(): Promise<string> {
-  const { os } = Deno.build;
   const cmd = {
     "darwin": ["pbpaste"],
     "linux": ["xclip", "-o"],
     "windows": ["powershell", "-noprofile", "-command", "Get-Clipboard"],
-  }[os];
+  }[Deno.build.os];
   const process = await Deno.run({ cmd, stdout: "piped", stderr: "piped" });
   const rawOutput = await process.output();
   await close(process);
-  return os === "windows"
-    ? decode(rawOutput).replace(/\r/g, "").replace(/\n$/, "")
-    : decode(rawOutput);
+  return decode(rawOutput).replace(/\r/g, "").replace(/\n$/, "");
 }
