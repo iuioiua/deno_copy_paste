@@ -1,6 +1,6 @@
 import { writeAll } from "./deps.ts";
 
-function encode(text?: string): Uint8Array {
+function encode(text: string): Uint8Array {
   return new TextEncoder().encode(text);
 }
 
@@ -8,28 +8,13 @@ function decode(data: Uint8Array): string {
   return new TextDecoder().decode(data);
 }
 
-async function run(
-  cmd: string[],
-  data?: Uint8Array,
-): Promise<Uint8Array> {
-  const process = await Deno.run({
-    cmd,
-    stdin: "piped",
-    stdout: "piped",
-    stderr: "piped",
-  });
-  if (data) {
-    await writeAll(process.stdin, data);
-  }
-  process.stdin.close();
+async function close(process: Deno.Process): Promise<void> {
   const { code } = await process.status();
-  const rawOutput = await process.output();
   const rawError = await process.stderrOutput();
-  if (code !== 0) {
-    console.error(decode(rawError));
-  }
   process.close();
-  return rawOutput;
+  if (code !== 0) {
+    throw new Error(decode(rawError));
+  }
 }
 
 /**
@@ -46,7 +31,10 @@ export async function copy(text: string): Promise<void> {
     "linux": ["xclip", "-selection", "clipboard"],
     "windows": ["powershell", "-noprofile", "-command", "$input|Set-Clipboard"],
   }[Deno.build.os];
-  await run(cmd, encode(text));
+  const process = await Deno.run({ cmd, stdin: "piped", stderr: "piped" });
+  await writeAll(process.stdin, encode(text));
+  process.stdin.close();
+  await close(process);
 }
 
 /**
@@ -64,7 +52,9 @@ export async function paste(): Promise<string> {
     "linux": ["xclip", "-o"],
     "windows": ["powershell", "-noprofile", "-command", "Get-Clipboard"],
   }[os];
-  const rawOutput = await run(cmd);
+  const process = await Deno.run({ cmd, stdout: "piped", stderr: "piped" });
+  const rawOutput = await process.output();
+  await close(process);
   return os === "windows"
     ? decode(rawOutput).replace(/\r/g, "").replace(/\n$/, "")
     : decode(rawOutput);
