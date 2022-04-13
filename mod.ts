@@ -52,5 +52,5 @@ export async function paste(): Promise<string> {
   const process = await Deno.run({ cmd, stdout: "piped", stderr: "piped" });
   const rawOutput = await process.output();
   await close(process);
-  return decode(rawOutput).replace(/\r\n/gu, "\n");
+  return decode(rawOutput).replace(/\r/g, "").replace(/\n$/, "");
 }
