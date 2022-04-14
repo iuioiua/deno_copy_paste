@@ -9,8 +9,10 @@ function decode(data: Uint8Array): string {
 }
 
 async function close(process: Deno.Process): Promise<void> {
-  const { success } = await process.status();
-  const rawError = await process.stderrOutput();
+  const [{ success }, rawError] = await Promise.all([
+    process.status(),
+    process.stderrOutput(),
+  ]);
   process.close();
   assert(success, decode(rawError));
 }
