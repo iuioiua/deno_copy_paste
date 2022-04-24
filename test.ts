@@ -1,5 +1,4 @@
 import { copy, paste } from "./mod.ts";
-import { assert } from "./deps.ts";
 
 Deno.test({
   name: "copy and paste",
@@ -13,6 +12,6 @@ Deno.test({
       Rafał
     `;
     await copy(text);
-    assert(text === await paste());
+    console.assert(text === await paste());
   },
 });
