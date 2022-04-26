@@ -13,7 +13,7 @@ async function close(process: Deno.Process): Promise<void> {
 }
 
 /**
- * Copies the text to the system clipboard
+ * Copies text to the system clipboard
  * @param {string} text Text to copy to the clipboard
  * @example
  * ```ts
@@ -33,7 +33,7 @@ export async function copy(text: string): Promise<void> {
 }
 
 /**
- * Pastes the text from the system clipboard
+ * Returns text from the system clipboard
  * @returns {Promise<string>} Pasted text from the clipboard
  * @example
  * ```ts
